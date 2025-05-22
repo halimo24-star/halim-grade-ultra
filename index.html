@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grade Master Ultra - By HALIM-R</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top right, #000000, #0f2027);
+      color: white;
+    }
+    header {
+      text-align: center;
+      padding: 30px 20px;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      font-size: 2em;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    header small {
+      display: block;
+      font-size: 0.5em;
+      color: #e0e0e0;
+    }
+    table {
+      width: 90%;
+      margin: 30px auto;
+      border-collapse: collapse;
+      background-color: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 14px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      color: #f1f1f1;
+    }
+    th {
+      background-color: rgba(0, 0, 0, 0.5);
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    input {
+      width: 80px;
+      padding: 8px;
+      text-align: center;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+      background-color: #222;
+      color: #0ff;
+      outline: none;
+    }
+    .btn {
+      display: block;
+      margin: 30px auto;
+      padding: 15px 40px;
+      font-size: 1.2em;
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+    }
+    #result {
+      text-align: center;
+      font-size: 1.5em;
+      margin: 20px auto;
+      color: #00ffcc;
+      font-weight: bold;
+    }
+    footer {
+      text-align: center;
+      padding: 15px;
+      color: #999;
+      font-size: 0.9em;
+      font-style: italic;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  Grade Master Ultra
+  <small>By HALIM-R</small>
+</header>
+
+<table>
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Coef</th>
+      <th>TD (40%)</th>
+      <th>Exam (60%)</th>
+      <th>Final</th>
+    </tr>
+  </thead>
+  <tbody id="gradeTable"></tbody>
+</table>
+
+<button class="btn" onclick="calculate()">Calculate General Average</button>
+<div id="result">General Average: -</div>
+
+<footer>&copy; 2025 - Made with 💻 by HALIM-R</footer>
+
+<script>
+const subjects = [
+  { name: "Written Expression", coef: 2, td: true },
+  { name: "Phonetics", coef: 2, td: true },
+  { name: "Grammar", coef: 2, td: true },
+  { name: "Technique of University Work", coef: 2, td: true },
+  { name: "Civilization", coef: 2, td: true },
+  { name: "Oral Expression", coef: 2, td: true },
+  { name: "Literature", coef: 1, td: true },
+  { name: "Digital Studies", coef: 1, td: false },
+  { name: "Text Studies", coef: 2, td: false },
+  { name: "French", coef: 1, td: false },
+];
+
+function buildTable() {
+  const tbody = document.getElementById("gradeTable");
+  subjects.forEach((s, i) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${s.name}</td>
+      <td>${s.coef}</td>
+      ${s.td ? `
+        <td><input type="number" id="td${i}" min="0" max="20" step="0.01" /></td>
+        <td><input type="number" id="exam${i}" min="0" max="20" step="0.01" /></td>
+      ` : `
+        <td>-</td>
+        <td><input type="number" id="exam${i}" min="0" max="20" step="0.01" /></td>
+      `}
+      <td id="final${i}">-</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+buildTable();
+
+function calculate() {
+  let total = 0;
+  const totalCoef = 17;
+  subjects.forEach((s, i) => {
+    let mark = 0;
+    if (s.td) {
+      const td = parseFloat(document.getElementById(`td${i}`).value) || 0;
+      const exam = parseFloat(document.getElementById(`exam${i}`).value) || 0;
+      mark = td * 0.4 + exam * 0.6;
+    } else {
+      const exam = parseFloat(document.getElementById(`exam${i}`).value) || 0;
+      mark = exam;
+    }
+    const weighted = mark * s.coef;
+    total += weighted;
+    document.getElementById(`final${i}`).innerText = mark.toFixed(7);
+  });
+  const average = total / totalCoef;
+  document.getElementById("result").innerText = `General Average: ${average.toFixed(7)}`;
+}
+</script>
+
+</body>
+</html>
